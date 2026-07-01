@@ -5,399 +5,99 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>🐱 貓咪照顧清單</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: linear-gradient(135deg, #fef9f3 0%, #fdf2e9 100%);
-      min-height: 100vh;
-      padding-bottom: 100px;
-    }
-
-    .header {
-      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-      padding: 20px;
-      text-align: center;
-      color: #5a4a42;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    .header h1 {
-      font-size: 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .date-display {
-      font-size: 0.9rem;
-      margin-top: 8px;
-      opacity: 0.8;
-    }
-
-    .progress-bar {
-      background: rgba(255,255,255,0.5);
-      border-radius: 20px;
-      height: 12px;
-      margin-top: 15px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      background: linear-gradient(90deg, #56ab2f, #a8e063);
-      height: 100%;
-      border-radius: 20px;
-      transition: width 0.4s ease;
-    }
-
-    .progress-text {
-      margin-top: 8px;
-      font-size: 0.85rem;
-      font-weight: 500;
-    }
-
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 15px;
-    }
-
-    .section {
-      background: white;
-      border-radius: 16px;
-      margin-bottom: 15px;
-      box-shadow: 0 2px 15px rgba(0,0,0,0.08);
-      overflow: hidden;
-    }
-
-    .section-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 15px;
-      font-weight: 600;
-      font-size: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: linear-gradient(135deg, #fef9f3 0%, #fdf2e9 100%); min-height: 100vh; padding-bottom: 100px; }
+    .header { background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%); padding: 20px; text-align: center; color: #5a4a42; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .header h1 { font-size: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .date-display { font-size: 0.9rem; margin-top: 8px; opacity: 0.8; }
+    .progress-bar { background: rgba(255,255,255,0.5); border-radius: 20px; height: 12px; margin-top: 15px; overflow: hidden; }
+    .progress-fill { background: linear-gradient(90deg, #56ab2f, #a8e063); height: 100%; border-radius: 20px; transition: width 0.4s ease; }
+    .progress-text { margin-top: 8px; font-size: 0.85rem; font-weight: 500; }
+    .container { max-width: 600px; margin: 0 auto; padding: 15px; }
+    .section { background: white; border-radius: 16px; margin-bottom: 15px; box-shadow: 0 2px 15px rgba(0,0,0,0.08); overflow: hidden; }
+    .section-header { color: white; padding: 15px; font-weight: 600; font-size: 1rem; display: flex; align-items: center; gap: 10px; }
     .section-header.environment { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
     .section-header.weather { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
     .section-header.health { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
     .section-header.bedtime { background: linear-gradient(135deg, #7f7fd5 0%, #86a8e7 100%); }
     .section-header.notes { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
-
-    .section-content {
-      padding: 10px;
-    }
-
-    .check-item {
-      display: flex;
-      align-items: center;
-      padding: 12px 15px;
-      border-radius: 10px;
-      margin: 5px 0;
-      background: #f8f9fa;
-      transition: all 0.2s ease;
-      cursor: pointer;
-    }
-
-    .check-item:hover {
-      background: #f0f1f3;
-    }
-
-    .check-item.checked {
-      background: #e8f5e9;
-    }
-
-    .check-item.checked .check-text {
-      text-decoration: line-through;
-      color: #888;
-    }
-
-    .checkbox {
-      width: 26px;
-      height: 26px;
-      border: 2px solid #ddd;
-      border-radius: 6px;
-      margin-right: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-      flex-shrink: 0;
-    }
-
-    .check-item.checked .checkbox {
-      background: linear-gradient(135deg, #56ab2f, #a8e063);
-      border-color: #56ab2f;
-    }
-
-    .checkbox svg {
-      width: 16px;
-      height: 16px;
-      stroke: white;
-      stroke-width: 3;
-      opacity: 0;
-      transform: scale(0.5);
-      transition: all 0.2s ease;
-    }
-
-    .check-item.checked .checkbox svg {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    .check-text {
-      font-size: 0.95rem;
-      color: #333;
-      flex: 1;
-    }
-
-    .notes-input {
-      width: 100%;
-      padding: 15px;
-      border: 2px solid #eee;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      resize: none;
-      min-height: 100px;
-      font-family: inherit;
-      transition: border-color 0.2s;
-    }
-
-    .notes-input:focus {
-      outline: none;
-      border-color: #f093fb;
-    }
-
-    .save-note-btn {
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      border-radius: 25px;
-      font-size: 0.95rem;
-      cursor: pointer;
-      margin-top: 10px;
-      width: 100%;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .save-note-btn:active {
-      transform: scale(0.98);
-    }
-
-    .weather-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      padding: 10px;
-    }
-
-    .weather-item {
-      background: #f0f7ff;
-      padding: 15px;
-      border-radius: 12px;
-      text-align: center;
-    }
-
-    .weather-item .icon {
-      font-size: 2rem;
-      margin-bottom: 5px;
-    }
-
-    .weather-item .label {
-      font-size: 0.85rem;
-      color: #666;
-    }
-
-    .weather-item .value {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #333;
-      margin-top: 3px;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: #333;
-      color: white;
-      padding: 12px 25px;
-      border-radius: 25px;
-      font-size: 0.9rem;
-      opacity: 0;
-      transition: all 0.3s ease;
-      z-index: 1000;
-    }
-
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1;
-    }
-
-    .footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: white;
-      padding: 15px;
-      box-shadow: 0 -2px 15px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-
-    .reset-btn {
-      background: #ff6b6b;
-      color: white;
-      border: none;
-      padding: 12px 30px;
-      border-radius: 25px;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .reset-btn:active {
-      background: #ee5a5a;
-    }
-
-    .saving {
-      opacity: 0.6;
-      pointer-events: none;
-    }
-
-    @media (min-width: 500px) {
-      .check-item {
-        padding: 15px 20px;
-      }
-      .check-text {
-        font-size: 1rem;
-      }
-    }
+    .section-content { padding: 10px; }
+    .check-item { display: flex; align-items: center; padding: 12px 15px; border-radius: 10px; margin: 5px 0; background: #f8f9fa; transition: all 0.2s ease; cursor: pointer; }
+    .check-item:hover { background: #f0f1f3; }
+    .check-item.checked { background: #e8f5e9; }
+    .check-item.checked .check-text { text-decoration: line-through; color: #888; }
+    .checkbox { width: 26px; height: 26px; border: 2px solid #ddd; border-radius: 6px; margin-right: 12px; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; flex-shrink: 0; }
+    .check-item.checked .checkbox { background: linear-gradient(135deg, #56ab2f, #a8e063); border-color: #56ab2f; }
+    .checkbox svg { width: 16px; height: 16px; stroke: white; stroke-width: 3; opacity: 0; transform: scale(0.5); transition: all 0.2s ease; }
+    .check-item.checked .checkbox svg { opacity: 1; transform: scale(1); }
+    .check-text { font-size: 0.95rem; color: #333; flex: 1; }
+    .notes-input { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 10px; font-size: 0.95rem; resize: none; min-height: 100px; font-family: inherit; transition: border-color 0.2s; }
+    .notes-input:focus { outline: none; border-color: #f093fb; }
+    .save-note-btn { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-size: 0.95rem; cursor: pointer; margin-top: 10px; width: 100%; }
+    .weather-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
+    .weather-item { background: #f0f7ff; padding: 15px; border-radius: 12px; text-align: center; }
+    .weather-item .icon { font-size: 2rem; margin-bottom: 5px; }
+    .weather-item .label { font-size: 0.85rem; color: #666; }
+    .weather-item .value { font-size: 1.2rem; font-weight: 600; color: #333; margin-top: 3px; }
+    .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px); background: #333; color: white; padding: 12px 25px; border-radius: 25px; font-size: 0.9rem; opacity: 0; transition: all 0.3s ease; z-index: 1000; }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .footer { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px; box-shadow: 0 -2px 15px rgba(0,0,0,0.1); text-align: center; }
+    .reset-btn { background: #ff6b6b; color: white; border: none; padding: 12px 30px; border-radius: 25px; font-size: 0.95rem; cursor: pointer; }
+    .status { background: #fff3cd; padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: center; font-size: 0.9rem; }
+    .status.error { background: #f8d7da; }
   </style>
 </head>
 <body>
   <div class="header">
     <h1>🐱 貓咪照顧清單</h1>
     <div class="date-display" id="dateDisplay"></div>
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
-    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 0%"></div></div>
     <div class="progress-text" id="progressText">已完成 0 / 0 項</div>
   </div>
 
+  <div class="status" id="status">🔄 連接中...</div>
+
   <div class="container">
-    <!-- 室內環境 -->
     <div class="section">
-      <div class="section-header environment">
-        <span>🏠</span> 室內環境
-      </div>
+      <div class="section-header environment"><span>🏠</span> 室內環境</div>
       <div class="section-content">
-        <div class="check-item" data-key="window_closed">
-          <div class="checkbox"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-          <span class="check-text">門窗已關好</span>
-        </div>
-        <div class="check-item" data-key="dangerous_items">
-          <div class="checkbox"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-          <span class="check-text">危險物品已收好</span>
-        </div>
-        <div class="check-item" data-key="balcony_safe">
-          <div class="checkbox"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-          <span class="check-text">陽台安全確認</span>
-        </div>
+        <div class="check-item" data-key="window_closed"><div class="checkbox"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg></div><span class="check-text">門窗已關好</span></div>
+        <div class="check-item" data-key="dangerous_items"><div class="checkbox"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg></div><span class="check-text">危險物品已收好</span></div>
+        <div class="check-item" data-key="balcony_safe"><div class="checkbox"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg></div><span class="check-text">陽台安全確認</span></div>
       </div>
     </div>
 
-    <!-- 天氣 -->
     <div class="section">
-      <div class="section-header weather">
-        <span>🌤️</span> 天氣概況
-      </div>
+      <div class="section-header weather"><span>🌤️</span> 天氣概況</div>
       <div class="weather-grid">
-        <div class="weather-item">
-          <div class="icon">🌡️</div>
-          <div class="label">溫度</div>
-          <div class="value" id="temp">--°C</div>
-        </div>
-        <div class="weather-item">
-          <div class="icon">💧</div>
-          <div class="label">濕度</div>
-          <div class="value" id="humidity">--%</div>
-        </div>
-        <div class="weather-item">
-          <div class="icon">☀️</div>
-          <div class="label">天氣</div>
-          <div class="value" id="weather">--</div>
-        </div>
-        <div class="weather-item">
-          <div class="icon">🌡️💦</div>
-          <div class="label">體感</div>
-          <div class="value" id="feelsLike">--°C</div>
-        </div>
+        <div class="weather-item"><div class="icon">🌡️</div><div class="label">溫度</div><div class="value" id="temp">--°C</div></div>
+        <div class="weather-item"><div class="icon">💧</div><div class="label">濕度</div><div class="value" id="humidity">--%</div></div>
+        <div class="weather-item"><div class="icon">☀️</div><div class="label">天氣</div><div class="value" id="weather">--</div></div>
+        <div class="weather-item"><div class="icon">🌡️💦</div><div class="label">體感</div><div class="value" id="feelsLike">--°C</div></div>
       </div>
     </div>
 
-    <!-- 飲食與健康 -->
     <div class="section">
-      <div class="section-header health">
-        <span>🍽️</span> 飲食與健康
-      </div>
+      <div class="section-header health"><span>🍽️</span> 飲食與健康</div>
       <div class="section-content">
-        <div class="check-item" data-key="food_fresh">
-          <div class="checkbox"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-          <span class="check-text">食物新鮮乾淨</span>
-        </div>
-        <div class="check-item" data-key="water_fresh">
-          <div class="checkbox"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-          <span class="check-text">飲水充足乾淨</span>
-        </div>
-        <div class="check-item" data-key="litter_clean">
-          <div class="checkbox"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-          <span class="check-text">貓砂盆乾淨</span>
-        </div>
-        <div class="check-item" data-key="medicine_taken">
-          <div class="checkbox"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-          <span class="check-text">藥物已服用</span>
-        </div>
+        <div class="check-item" data-key="food_fresh"><div class="checkbox"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg></div><span class="check-text">食物新鮮乾淨</span></div>
+        <div class="check-item" data-key="water_fresh"><div class="checkbox"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg></div><span class="check-text">飲水充足乾淨</span></div>
+        <div class="check-item" data-key="litter_clean"><div class="checkbox"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg></div><span class="check-text">貓砂盆乾淨</span></div>
+        <div class="check-item" data-key="medicine_taken"><div class="checkbox"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg></div><span class="check-text">藥物已服用</span></div>
       </div>
     </div>
 
-    <!-- 外出/就寢前確認 -->
     <div class="section">
-      <div class="section-header bedtime">
-        <span>🌙</span> 外出/就寢前確認
-      </div>
+      <div class="section-header bedtime"><span>🌙</span> 外出/就寢前確認</div>
       <div class="section-content">
-        <div class="check-item" data-key="cat_home">
-          <div class="checkbox"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-          <span class="check-text">確認貓咪在家</span>
-        </div>
-        <div class="check-item" data-key="light_on">
-          <div class="checkbox"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-          <span class="check-text">留一盞小燈</span>
-        </div>
-        <div class="check-item" data-key="ac_temp">
-          <div class="checkbox"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-          <span class="check-text">冷氣溫度適當</span>
-        </div>
+        <div class="check-item" data-key="cat_home"><div class="checkbox"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg></div><span class="check-text">確認貓咪在家</span></div>
+        <div class="check-item" data-key="light_on"><div class="checkbox"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg></div><span class="check-text">留一盞小燈</span></div>
+        <div class="check-item" data-key="ac_temp"><div class="checkbox"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg></div><span class="check-text">冷氣溫度適當</span></div>
       </div>
     </div>
 
-    <!-- 每日照顧筆記 -->
     <div class="section">
-      <div class="section-header notes">
-        <span>📝</span> 每日照顧筆記
-      </div>
+      <div class="section-header notes"><span>📝</span> 每日照顧筆記</div>
       <div class="section-content">
         <textarea class="notes-input" id="notesInput" placeholder="寫下今天的照顧心得、貓咪狀態..."></textarea>
         <button class="save-note-btn" id="saveNoteBtn">儲存筆記</button>
@@ -412,7 +112,9 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const API_BASE = '/api';
+    // 🔗 請把這個 URL 替換成你的 Google Apps Script 部署 URL
+    const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL';
+
     const checkItems = document.querySelectorAll('.check-item[data-key]');
     const progressFill = document.getElementById('progressFill');
     const progressText = document.getElementById('progressText');
@@ -421,122 +123,151 @@
     const saveNoteBtn = document.getElementById('saveNoteBtn');
     const resetBtn = document.getElementById('resetBtn');
     const dateDisplay = document.getElementById('dateDisplay');
+    const status = document.getElementById('status');
 
-    // Today's date
     const today = new Date().toISOString().split('T')[0];
     const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-    dateDisplay.textContent = `${today} ${weekdays[new Date().getDay()]}`;
+    dateDisplay.textContent = today + ' ' + weekdays[new Date().getDay()];
 
-    // Toast notification
     function showToast(message) {
       toast.textContent = message;
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 2000);
     }
 
-    // Update progress
     function updateProgress() {
       const total = checkItems.length;
       const checked = document.querySelectorAll('.check-item.checked').length;
       const percent = Math.round((checked / total) * 100);
       progressFill.style.width = percent + '%';
-      progressText.textContent = `已完成 ${checked} / ${total} 項`;
+      progressText.textContent = '已完成 ' + checked + ' / ' + total + ' 項';
     }
 
-    // Load saved states
-    async function loadStates() {
+    async function apiCall(url, data = null) {
       try {
-        const res = await fetch(`${API_BASE}/checks`);
-        const data = await res.json();
-        
-        checkItems.forEach(item => {
-          const key = item.dataset.key;
-          const checkKey = `${key}_${today}`;
-          if (data.checks[checkKey]?.checked) {
-            item.classList.add('checked');
-          }
-        });
-        
-        if (data.notes) {
-          notesInput.value = data.notes;
-        }
-        
-        updateProgress();
+        const options = data ? {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        } : { method: 'GET' };
+        const res = await fetch(url, options);
+        return await res.json();
       } catch (e) {
-        console.error('Load failed:', e);
+        console.error('API Error:', e);
+        return { error: e.message };
       }
     }
 
-    // Toggle check
+    async function loadStates() {
+      status.textContent = '🔄 載入資料中...';
+      status.className = 'status';
+      
+      const data = await apiCall(SCRIPT_URL + '?action=getChecks');
+      
+      if (data.error) {
+        status.textContent = '❌ 連線失敗：' + data.error;
+        status.className = 'status error';
+        // 使用 localStorage 備用
+        loadFromLocalStorage();
+      } else {
+        status.textContent = '✅ 已連線到 Google 試算表';
+        status.className = 'status';
+        
+        checkItems.forEach(item => {
+          const key = item.dataset.key;
+          if (data.checks && data.checks[key]?.checked) {
+            item.classList.add('checked');
+          }
+        });
+      }
+      
+      updateProgress();
+      
+      // 載入筆記
+      const noteData = await apiCall(SCRIPT_URL + '?action=getNotes');
+      if (noteData.note) {
+        notesInput.value = noteData.note;
+      }
+    }
+
+    function loadFromLocalStorage() {
+      checkItems.forEach(item => {
+        const key = item.dataset.key;
+        if (localStorage.getItem('cat_' + key + '_' + today) === 'true') {
+          item.classList.add('checked');
+        }
+      });
+      updateProgress();
+      showToast('📱 已使用本機備份');
+    }
+
     async function toggleCheck(item) {
       const key = item.dataset.key;
       const isChecked = item.classList.toggle('checked');
       
+      // 同時存到 localStorage 備用
+      localStorage.setItem('cat_' + key + '_' + today, isChecked);
+      
       updateProgress();
       
-      try {
-        await fetch(`${API_BASE}/checks/${key}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ checked: isChecked })
-        });
-      } catch (e) {
-        console.error('Save failed:', e);
-        item.classList.toggle('checked');
-        updateProgress();
+      const result = await apiCall(SCRIPT_URL, {
+        action: 'setCheck',
+        key: key,
+        checked: isChecked
+      });
+      
+      if (result.success) {
+        showToast('✅ 已儲存');
+      } else {
+        showToast('📱 已存本機');
       }
     }
 
-    // Event listeners for check items
     checkItems.forEach(item => {
       item.addEventListener('click', () => toggleCheck(item));
     });
 
-    // Save notes
     saveNoteBtn.addEventListener('click', async () => {
       saveNoteBtn.textContent = '儲存中...';
       const note = notesInput.value;
       
-      try {
-        await fetch(`${API_BASE}/notes`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ note })
-        });
+      const result = await apiCall(SCRIPT_URL, {
+        action: 'setNotes',
+        note: note
+      });
+      
+      if (result.success) {
         showToast('✅ 筆記已儲存');
-      } catch (e) {
-        showToast('❌ 儲存失敗');
+      } else {
+        localStorage.setItem('cat_notes_' + today, note);
+        showToast('📱 已存本機');
       }
       
       saveNoteBtn.textContent = '儲存筆記';
     });
 
-    // Reset
     resetBtn.addEventListener('click', async () => {
       if (!confirm('確定要重置今天的進度嗎？')) return;
       
-      try {
-        await fetch(`${API_BASE}/reset`, { method: 'POST' });
-        checkItems.forEach(item => item.classList.remove('checked'));
-        updateProgress();
-        showToast('✅ 已重置');
-      } catch (e) {
-        showToast('❌ 重置失敗');
-      }
+      checkItems.forEach(item => {
+        item.classList.remove('checked');
+        localStorage.removeItem('cat_' + item.dataset.key + '_' + today);
+      });
+      updateProgress();
+      
+      const result = await apiCall(SCRIPT_URL, { action: 'reset' });
+      showToast('✅ 已重置');
     });
 
-    // Load weather (mock data for demo)
     function loadWeather() {
-      // Using IP-based geolocation weather API or mock
       document.getElementById('temp').textContent = Math.round(25 + Math.random() * 5) + '°C';
       document.getElementById('humidity').textContent = Math.round(50 + Math.random() * 30) + '%';
       document.getElementById('weather').textContent = ['晴', '多雲', '陰', '小雨'][Math.floor(Math.random() * 4)];
       document.getElementById('feelsLike').textContent = Math.round(24 + Math.random() * 5) + '°C';
     }
 
-    // Init
-    loadStates();
     loadWeather();
+    loadStates();
   </script>
 </body>
 </html>
