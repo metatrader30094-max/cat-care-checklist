@@ -11,15 +11,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
+      - name: Create Railway Token File
+        run: |
+          mkdir -p ~/.railway
+          echo 'OHYZq6OTEdcgCqLul0pFyaHxI12ExeLk0dc-9YbE6g5' > ~/.railway/token
           
       - name: Install Railway CLI
         run: npm install -g @railway/cli
         
       - name: Railway Deploy
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway up --service cat-care --yes
+        run: |
+          railway whoami || echo "Token check"
+          railway up --service 貓保母 --yes --json
